@@ -15,6 +15,22 @@
             this.Name = name;
             Numbers = new List<int>();
         }
+
+        public void printPlus(ref int a)
+        {
+            a += 5;
+            Console.WriteLine(a);
+        }
+
+        public int addNumbers(List<int> numbers)
+        {
+            int sum = 0;
+            foreach (var num in numbers)
+            {
+                sum += num;
+            }
+            return sum;
+        }
     }
     class Program
     {
@@ -34,6 +50,20 @@
             Console.WriteLine(person.Id);
             Console.WriteLine(person.Name);
             Console.WriteLine(string.Join(", ", person.Numbers));
+            int sum = person.addNumbers(person.Numbers);
+            Console.WriteLine($"Sum of numbers: {sum}");
+
+            int myNum = 10;
+            person.printPlus(ref myNum);
+            Console.WriteLine(myNum);
+            if (myNum == 10)
+            {
+                Console.WriteLine("myNum is still 10");
+            }
+            else
+            {
+                Console.WriteLine("myNum has been changed");
+            }
         }
 
     }

@@ -1,70 +1,136 @@
-﻿namespace Classes
+﻿namespace TaskManager
 {
-    // class
-    class Person
+    class Manager
     {
-        // Fields
-        public int Id;
-        public string Name;
-        public List<int> Numbers;
+        public List<Task> tasks { get; set; }
 
-        // Constructor
-        public Person(int id, string name)
+        public Manager()
         {
-            this.Id = id;
-            this.Name = name;
-            Numbers = new List<int>();
+            tasks = new List<Task>();
         }
 
-        public void printPlus(ref int a)
+        public void addTask()
         {
-            a += 5;
-            Console.WriteLine(a);
+            Console.WriteLine("Enter task title: ");
+            string input = Console.ReadLine() ?? "";
+
+            var t = new Task(input);
+            tasks.Add(t);
         }
 
-        public int addNumbers(List<int> numbers)
+        public void viewTasks()
         {
-            int sum = 0;
-            foreach (var num in numbers)
+            foreach (var task in tasks)
             {
-                sum += num;
+                Console.WriteLine($"{task.title} Completed: {task.isComplete}");
             }
-            return sum;
+        }
+
+        public void setComplete()
+        {
+            Console.WriteLine("Enter task title: ");
+            string title = Console.ReadLine() ?? "";
+
+            Task? task = getTask(title);
+            if (task == null) return;
+
+            if (task.isComplete)
+            {
+                Console.WriteLine($"Task '{title}' is already completed.");
+            }
+            else
+            {
+                task.isComplete = true;
+                Console.WriteLine($"Task '{title}' completed.");
+            }
+        }
+
+        public void removeTask()
+        {
+            Console.WriteLine("Enter task title to remove: ");
+            string title = Console.ReadLine() ?? "";
+
+            Task? task = getTask(title);
+            if (task == null) return;
+
+            tasks.Remove(task);
+            Console.WriteLine($"Task '{title}' removed.");
+        }
+
+        Task? getTask(string title)
+        {
+            Task? found = tasks.Find(t => t.title == title);
+            if (found != null)
+            {
+                return found;
+            }
+            else
+            {
+                Console.WriteLine($"Task '{title}' not found.");
+                return null;
+            }
+        }
+    }
+
+    class Task
+    {
+        public string title { get; set; }
+        public bool isComplete { get; set; }
+
+        public Task(string title)
+        {
+            this.title = title;
+            isComplete = false;
         }
     }
     class Program
     {
         static void Main(string[] args)
         {
-            var person = new Person(1, "John");
-            person.Numbers.Add(10);
-            person.Numbers.Add(20);
+            bool running = true;
 
-            List<string> fruits = new List<string> { "Apple", "Banana", "Cherry" };
+            var taskManager = new Manager();
 
-            for (int i = 0; i < fruits.Count; i++)
+            while (running)
             {
-                Console.WriteLine(fruits[i]);
-            }
+                showMenu();
 
-            Console.WriteLine(person.Id);
-            Console.WriteLine(person.Name);
-            Console.WriteLine(string.Join(", ", person.Numbers));
-            int sum = person.addNumbers(person.Numbers);
-            Console.WriteLine($"Sum of numbers: {sum}");
+                string input = Console.ReadLine() ?? "";
 
-            int myNum = 10;
-            person.printPlus(ref myNum);
-            Console.WriteLine(myNum);
-            if (myNum == 10)
-            {
-                Console.WriteLine("myNum is still 10");
-            }
-            else
-            {
-                Console.WriteLine("myNum has been changed");
+                switch (input)
+                {
+                    case "1":
+                        taskManager.addTask();
+                        break;
+                    case "2":
+                        taskManager.viewTasks();
+                        break;
+                    case "3":
+                        taskManager.setComplete();
+                        break;
+                    case "4":
+                        taskManager.removeTask();
+                        break;
+                    case "5":
+                        running = false;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid option");
+                        break;
+                }
             }
         }
 
+        static void showMenu()
+        {
+            string divider = new string('=', 25);
+
+            Console.WriteLine($"{divider}\n1. Add Task");
+            Console.WriteLine("2. View Tasks");
+            Console.WriteLine("3. Mark Task Complete");
+            Console.WriteLine("4. Remove Task");
+            Console.WriteLine("5. Exit");
+            Console.WriteLine($"{divider}\n Select an option: ");
+        }
     }
 }
